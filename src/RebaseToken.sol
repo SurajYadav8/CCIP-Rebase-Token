@@ -54,6 +54,12 @@ contract RebaseToken is ERC20 {
         _mint(_to, _amount); // inherited from ERC20 contract of openzeppelin
     }
 
+    function burn(address _from, uint256 _amount) external {
+        _mintAccruedInterest(_from);
+        _burn(_from, _amount);
+        
+    }
+
     /*
     * calculate the balance for the user including the interest that has accumulated since the balance last updated
     * (principle balance) + some interest that has accrued
@@ -87,13 +93,21 @@ contract RebaseToken is ERC20 {
     linearInterest = PRECISION_FACTOR + (s_userInterestRate[_user] * timeElapsed);
    }
 
+   /*
+   * @notice Mint the accured interest to user since the last time they interacted with the protocol (e.g. burn, mint, transfer)
+   * @param _user The user to mint the accured interest to 
+   */ 
     function _mintAccruedInterest(address _user) internal {
         // find the current balance of rebase tokens that have been minted to the user -> principal amount
+        uint256 previousPrincipleBalance = super.balanceOf(_user);
         // calculate their current balance including any interest -> balanceOf
+        uint256 currentBalance = balanceOf(_user);
         // calculate the numberof tokens that need to be minted to the user -> (2) - (1)
-        // call _mint to mint the tokens to the user
+        uint256 balanceIncreased = currentBalance - previousPrincipleBalance;
         // set the users last updated timestamp
         s_userLastUpdatedTimestamp[_user] = block.timestamp;
+        // call _mint to mint the tokens to the user
+        _mint(_user, balanceIncreased);
 
     }
 
