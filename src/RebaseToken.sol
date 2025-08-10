@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
 
 
 /*
@@ -33,7 +34,7 @@ contract RebaseToken is ERC20, Ownable{
     * @dev The interest rate can only decrease
     */
 
-    function setInterestRate(uint256 _newInterestRate) external {
+    function setInterestRate(uint256 _newInterestRate) external onlyOwner {
 
         if(_newInterestRate < s_interestRate) {
             revert RebaseToekn_InterestRateCanOnlyDecrease (s_interestRate,  _newInterestRate);
