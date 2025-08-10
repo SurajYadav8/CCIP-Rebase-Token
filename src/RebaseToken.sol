@@ -13,19 +13,22 @@ import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/Acce
 * @notice The interest rate in the smart contract can only decrease
 * @notice Each user will have their own interest rate that is the global interset rate at the time of depositing.
 */
-contract RebaseToken is ERC20, Ownable{
+contract RebaseToken is ERC20, Ownable, AccessControl{
 
     error RebaseToekn_InterestRateCanOnlyDecrease(uint oldInterestRate, uint256 newInterestRate);
     
     uint256 private constant PRECISION_FACTOR = 1e18; 
+    bytes32 private constant MINT_AND_BURN_ROLE = keccak256("MINT_AND_BURN_ROLE");
     uint256 private s_interestRate = 5e10;
     mapping (address => uint256) private s_userInterestRate;
     mapping (address => uint256) private s_userLastUpdatedTimestamp;
 
     event InterestRate(uint256 newInterestRate);
 
-    constructor() ERC20 ("Rebase Token", "RBT") Ownable(msg.sender) {
+    constructor() ERC20 ("Rebase Token", "RBT") Ownable(msg.sender) {}
 
+    function grandMintAndBurnRole(address _account) external onlyOwner {
+        _grantRole(MINT_AND_BURN_ROLE, _account);
     }
 
     /*
@@ -60,7 +63,7 @@ contract RebaseToken is ERC20, Ownable{
     * @param _amount The amount of tokens to mint
     */
 
-    function mint(address _to, uint256 _amount) external {
+    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAccruedInterest(_to);  // AccruedInterest mtlb purana hisab kitab jo abhi diya nhi hai 
         s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount); // inherited from ERC20 contract of openzeppelin
@@ -71,7 +74,7 @@ contract RebaseToken is ERC20, Ownable{
     * @param _amount The amount of tokens to burn
     */
 
-    function burn(address _from, uint256 _amount) external {
+    function burn(address _from, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         if (_amount == type(uint256).max){
             _amount = balanceOf(_from);
         }
