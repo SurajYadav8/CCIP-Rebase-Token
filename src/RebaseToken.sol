@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 
 /*
@@ -11,7 +12,7 @@ import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.s
 * @notice The interest rate in the smart contract can only decrease
 * @notice Each user will have their own interest rate that is the global interset rate at the time of depositing.
 */
-contract RebaseToken is ERC20 {
+contract RebaseToken is ERC20, Ownable{
 
     error RebaseToekn_InterestRateCanOnlyDecrease(uint oldInterestRate, uint256 newInterestRate);
     
@@ -22,7 +23,7 @@ contract RebaseToken is ERC20 {
 
     event InterestRate(uint256 newInterestRate);
 
-    constructor() ERC20 ("Rebase Token", "RBT") {
+    constructor() ERC20 ("Rebase Token", "RBT") Ownable(msg.sender) {
 
     }
 
