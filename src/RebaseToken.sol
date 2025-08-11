@@ -47,7 +47,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl{
         emit InterestRate(_newInterestRate);
     }
 
-    /*
+    /** 
     * @notice Get the principle balance of a user. This is the number of tokens that have currently been minted to the user, not including any interest that has accrued since the last time the user interacted with the protocol.
     * @param _user The user to get the principle balance for
     * @return The principle balance of the user
