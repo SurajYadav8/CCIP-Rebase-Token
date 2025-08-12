@@ -50,7 +50,7 @@ contract Vault  {
         emit Redeem(msg.sender, _amount);
     }
 
-    /** */
+    /**  */
 
     function getRebaseTokenAddress()external view returns(address) {
        return address(i_rebaseToken);
