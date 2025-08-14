@@ -9,4 +9,4 @@
    - This global interest rate can only decrease to incentivise/reward early adopters.
    - Increase token adoption!
 
-4. Vault contract
+4. 
