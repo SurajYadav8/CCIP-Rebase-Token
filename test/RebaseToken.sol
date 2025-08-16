@@ -31,8 +31,12 @@ contract RebaseTokenTest is Test {
         amount = bound(amount, 1e5, type(uint96).max);
         // 1. deposit
         vm.startPrank(user);
-        vm.deal(user, amount)
+        vm.deal(user, amount);
+        vault.deposit{value: amount}();
         // 2. check our rebase token balance
+        uint256 startBalance = rebaseToken.balanceOf(user);
+        console.log("startBalance", startBalance);
+        assertEq(startBalance, amount);
         // 3. warp the time and check the balance again
         // 4. warp the time again by the same amount and check the balance again
         vm.stopPrank();
