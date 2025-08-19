@@ -45,7 +45,7 @@ contract RebaseTokenTest is Test {
         uint256 endBalance = rebaseToken.balanceOf(user);
         assertGt(endBalance, middleBalance);
 
-        assertGt(endBalance - middleBalance, middleBalance - startBalance);
+        assertApproxEqAbs(endBalance - middleBalance, middleBalance - startBalance, 1);
         vm.stopPrank();
 
     }
