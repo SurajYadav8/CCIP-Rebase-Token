@@ -106,15 +106,13 @@ contract RebaseTokenTest is Test {
         assertEq(userBalance, amount);
         assertEq(user2Balance, 0);
 
-
         vm.prank(owner);
         rebaseToken.setInterestRate(4e10);
-
 
         // 2. transfer
         vm.prank(user);
         rebaseToken.transfer(user2, amountToSend);
-        uint256 userBalanceAfterTransfer =  rebaseToken.balanceOf(user);
+        uint256 userBalanceAfterTransfer = rebaseToken.balanceOf(user);
         uint256 user2BalanceAfterTransfer = rebaseToken.balanceOf(user2);
         assertEq(userBalanceAfterTransfer, userBalance - amountToSend);
         assertEq(user2BalanceAfterTransfer, amountToSend);
