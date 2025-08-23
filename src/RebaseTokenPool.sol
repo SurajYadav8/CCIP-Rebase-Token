@@ -19,7 +19,7 @@ contract RebaseTokenPool is TokenPool {
         address receiver = abi.decode(lockOrBurnIn.receiver, (address));
         uint256 userInterestRate = IRebaseToken(address(i_token)).getUserInterestRate(receiver);
         IRebaseToken(address(i_token)).burn(address(this), lockOrBurnIn.amount);
-        lockOrBurnOut = Pool.lockOrBurnOutV1({
+        lockOrBurnOut = Pool.LockOrBurnOutV1({
             destTokenAddress: getRemoteToken(lockOrBurnIn.remoteChainSelector),
             destPoolData: abi.encode(userInterestRate)
         });
@@ -30,5 +30,13 @@ contract RebaseTokenPool is TokenPool {
         returns (Pool.ReleaseOrMintOutV1 memory releaseOrMintOut)
     {
         // Implement the logic for release or minting tokens
+        _validateReleaseOrMint(releaseOrMintIn);
+        uint256 userInterestRate = abi.decode(releaseOrMintIn.sourcePoolData, (uint256));
+        IRebaseToken(address(i_token)).mint(releaseOrMintIn.receiver, releaseOrMintIn.amount, userInterestRate);
+
+        return Pool.ReleaseOrMintOutV1({
+            destinationAmount: releaseOrMintIn.amount
+        });
+
     }
 }
