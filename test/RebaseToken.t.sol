@@ -9,7 +9,7 @@ import {IAccessControl} from "../lib/openzeppelin-contracts/contracts/access/Acc
 import {RebaseToken} from "../src/RebaseToken.sol";
 import {Vault} from "../src/Vault.sol";
 
-import {IRebaseToken} from "../src/interfaces/iRebaseToken.sol";
+import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
 
 contract RebaseTokenTest is Test {
     RebaseToken private rebaseToken;
@@ -131,7 +131,7 @@ contract RebaseTokenTest is Test {
     function testCannotCallMintAndBurn() public {
         vm.prank(user);
         vm.expectPartialRevert(bytes4(IAccessControl.AccessControlUnauthorizedAccount.selector));
-        rebaseToken.mint(user, 100);
+        rebaseToken.mint(user, 100, rebaseToken.getUserInterestRate(user));
         vm.expectPartialRevert(bytes4(IAccessControl.AccessControlUnauthorizedAccount.selector));
         rebaseToken.burn(user, 100);
     }
