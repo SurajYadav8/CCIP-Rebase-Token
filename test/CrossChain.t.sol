@@ -21,6 +21,9 @@ contract CrossChainTest is Test {
 
     Vault vault;
 
+    RebaseTokenPool sepoliaPool;
+    RebaseTokenPool arbSepoliaPool;
+
     function setup() public {
         sepoliaFork = vm.createSelectFork("sepolia");
         arbSepoliaFork = vm.createSelectFork("arb-sepolia");
@@ -31,12 +34,13 @@ contract CrossChainTest is Test {
         // 1. Deploy and configure on sepolia
         vm.startPrank(owner);
         sepoliaToken = new RebaseToken();
+        vault = new Vault(IRebaseToken(address(sepoliaToken)));
+        sepoliaPool = new RebaseTokenPool();
         vm.stopPrank();
 
         // 2. Deploy and configure on arb-sepolia
         vm.selectFork(arbSepoliaFork);
         arbSepoliaToken = new RebaseToken();
-        vault = new Vault(IRebaseToken(sepoliaToken));
         vm.startPrank(owner);
         vm.stopPrank();
     }
