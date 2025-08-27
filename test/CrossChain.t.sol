@@ -13,7 +13,7 @@ import {RegistryModuleOwnerCustom} from
 import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol";
 
 contract CrossChainTest is Test {
-    address constant owner = makeAddr("owner");
+    address immutable owner = makeAddr("owner");
 
     uint256 sepoliaFork;
     uint256 arbSepoliaFork;
@@ -29,7 +29,7 @@ contract CrossChainTest is Test {
     RebaseTokenPool arbSepoliaPool;
 
     Register.NetworkDetails sepoliaNetworkDetails;
-    Register.NetworkDetails arbSepoliaDetails;
+    Register.NetworkDetails arbSepoliaNetworkDetails;
 
     function setup() public {
         sepoliaFork = vm.createSelectFork("sepolia");
