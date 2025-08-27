@@ -11,6 +11,7 @@ import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
 import {RegistryModuleOwnerCustom} from
     "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/RegistryModuleOwnerCustom.sol";
 import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol";
+import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
 
 contract CrossChainTest is Test {
     address immutable owner = makeAddr("owner");
@@ -80,5 +81,21 @@ contract CrossChainTest is Test {
         );
         vm.startPrank(owner);
         vm.stopPrank();
+    }
+
+    function configureTokenPool(uint256 fork, address localPool, uint64 remoteChainSelector) public {
+        vm.selectFor(fork);
+        vm.prank(owner);
+        TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
+        // struct ChainUpdate {
+        //     uint64 remoteChainSelector;
+        //     bytes[] remotePoolAddresses;
+        //     bytes remoteTokenAddress;
+        //     RateLimiter.Config outboundRateLimiterConfig;
+        //     RateLimiter.Config inboundRateLimiterConfig;
+        // }
+        chainsToAdd[0] = TokenPool.ChainUpdate({});
+        TokenPool(localPool).applyChainUpdates(new uint64[](0), chainsToAdd);
+
     }
 }
