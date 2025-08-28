@@ -86,11 +86,25 @@ contract CrossChainTest is Test {
     }
 
     function setupTokenPools() public {
-        configureTokenPool(sepoliaFork, address(sepoliaPool), arbSepoliaNetworkDetails.chainSelector, address(arbSepoliaPool), address(arbSepoliaToken));
-        configureTokenPool(arbSepoliaFork, address(arbSepoliaPool), uint64(421613), address(sepoliaPool), address(sepoliaToken));
+        configureTokenPool(
+            sepoliaFork,
+            address(sepoliaPool),
+            arbSepoliaNetworkDetails.chainSelector,
+            address(arbSepoliaPool),
+            address(arbSepoliaToken)
+        );
+        configureTokenPool(
+            arbSepoliaFork, address(arbSepoliaPool), uint64(421613), address(sepoliaPool), address(sepoliaToken)
+        );
     }
 
-    function configureTokenPool(uint256 fork, address localPool, uint64 remoteChainSelector, address remotePool, address remoteTokenAddress) public {
+    function configureTokenPool(
+        uint256 fork,
+        address localPool,
+        uint64 remoteChainSelector,
+        address remotePool,
+        address remoteTokenAddress
+    ) public {
         vm.selectFork(fork);
         vm.prank(owner);
         bytes[] memory remotePoolAddresses = new bytes[](1);
@@ -109,16 +123,8 @@ contract CrossChainTest is Test {
             remoteChainSelector: remoteChainSelector,
             remotePoolAddresses: remotePoolAddresses,
             remoteTokenAddresses: abi.encode(remoteTokenAddress),
-            outboundRateLimiterConfig: RateLimiter.Config({
-                isEnabled: false,
-                capacity: 0,
-                rate: 0
-            }),
-            inboundRateLimiterConfig: RateLimiter.Config({
-                isEnabled: false,
-                capacity: 0,
-                rate: 0
-            })
+            outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
+            inboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0})
         });
         TokenPool(localPool).applyChainUpdates(new uint64[](0), chainsToAdd);
     }
