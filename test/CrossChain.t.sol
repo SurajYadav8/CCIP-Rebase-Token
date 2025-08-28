@@ -12,6 +12,7 @@ import {RegistryModuleOwnerCustom} from
     "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/RegistryModuleOwnerCustom.sol";
 import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol";
 import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
+import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
 contract CrossChainTest is Test {
     address immutable owner = makeAddr("owner");
@@ -62,6 +63,7 @@ contract CrossChainTest is Test {
         vm.stopPrank();
 
         // 2. Deploy and configure on arb-sepolia
+        vm.startPrank(owner);
         vm.selectFork(arbSepoliaFork);
         arbSepoliaNetworkDetails = ccipLocalSimulatorFork.getNetworkDetails(block.chainid);
         arbSepoliaToken = new RebaseToken();
@@ -83,9 +85,14 @@ contract CrossChainTest is Test {
         vm.stopPrank();
     }
 
-    function configureTokenPool(uint256 fork, address localPool, uint64 remoteChainSelector) public {
+    configureTokenPool(sepoliaFork, address(sepoliaPool), arbSepoliaNetworkDetails.chainSelector, address(arbSepoliaPool), address(arbSepoliaToken));
+    configureTokenPool(arbSepoliaFork, address(arbSepoliaPool), uint64(421613), address(sepoliaPool), address(sepoliaToken));
+
+    function configureTokenPool(uint256 fork, address localPool, uint64 remoteChainSelector, address remotePool, address remoteTokenAddress) public {
         vm.selectFork(fork);
         vm.prank(owner);
+        bytes[] memory remotePoolAddresses = new bytes[](1);
+        remotePoolAddresses[0] = abi.encode(remotePool);
         TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
         //         struct ChainUpdate {
         //     uint64 remoteChainSelector; // ──╮ Remote chain selector
@@ -96,7 +103,21 @@ contract CrossChainTest is Test {
         //     RateLimiter.Config inboundRateLimiterConfig; // Inbound rate limited config, meaning the rate limits for all of the offRamps for the given chain
         //   }
 
-        chainsToAdd[0] = TokenPool.ChainUpdate({});
+        chainsToAdd[0] = TokenPool.ChainUpdate({
+            remoteChainSelector: remoteChainSelector,
+            remotePoolAddresses: remotePoolAddresses,
+            remoteTokenAddresses: abi.encode(remoteTokenAddress),
+            outboundRateLimiterConfig: RateLimiter.Config({
+                isEnabled: false,
+                capacity: 0,
+                rate: 0
+            }),
+            inboundRateLimiterConfig: RateLimiter.Config({
+                isEnabled: false,
+                capacity: 0,
+                rate: 0
+            })
+        });
         TokenPool(localPool).applyChainUpdates(new uint64[](0), chainsToAdd);
     }
 }
