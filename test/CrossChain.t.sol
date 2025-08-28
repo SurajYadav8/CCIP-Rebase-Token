@@ -85,8 +85,10 @@ contract CrossChainTest is Test {
         vm.stopPrank();
     }
 
-    configureTokenPool(sepoliaFork, address(sepoliaPool), arbSepoliaNetworkDetails.chainSelector, address(arbSepoliaPool), address(arbSepoliaToken));
-    configureTokenPool(arbSepoliaFork, address(arbSepoliaPool), uint64(421613), address(sepoliaPool), address(sepoliaToken));
+    function setupTokenPools() public {
+        configureTokenPool(sepoliaFork, address(sepoliaPool), arbSepoliaNetworkDetails.chainSelector, address(arbSepoliaPool), address(arbSepoliaToken));
+        configureTokenPool(arbSepoliaFork, address(arbSepoliaPool), uint64(421613), address(sepoliaPool), address(sepoliaToken));
+    }
 
     function configureTokenPool(uint256 fork, address localPool, uint64 remoteChainSelector, address remotePool, address remoteTokenAddress) public {
         vm.selectFork(fork);
