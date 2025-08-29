@@ -123,6 +123,7 @@ contract CrossChainTest is Test {
         remoteTokenAddresses[0] = abi.encode(remoteTokenAddress);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: remoteChainSelector,
+            allowed: true,
             remotePoolAddresses: remotePoolAddresses,
             remoteTokenAddresses: remoteTokenAddresses,
             outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
