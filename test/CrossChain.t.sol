@@ -13,6 +13,7 @@ import {RegistryModuleOwnerCustom} from
 import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol";
 import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
 import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
+import {Client} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/Client.sol";
 
 contract CrossChainTest is Test {
     address immutable owner = makeAddr("owner");
@@ -133,6 +134,9 @@ contract CrossChainTest is Test {
     }
 
     function bridgeTokens(uint256 amountTOBridge, uint256 localFork, uint256 remoteFork, Register.NetworkDetails memory localNetworkDetails, Register.NetworkDetails remoteNetworkDetails, RebaseToken localToken, RebaseToken remoteToken) public {
+        vm.selectFork(localFork);
+        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({})
+        vm.startPrank(user);
 
     }
 }
