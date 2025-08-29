@@ -119,10 +119,12 @@ contract CrossChainTest is Test {
         //     RateLimiter.Config inboundRateLimiterConfig; // Inbound rate limited config, meaning the rate limits for all of the offRamps for the given chain
         //   }
 
+        bytes[] memory remoteTokenAddresses = new bytes[](1);
+        remoteTokenAddresses[0] = abi.encode(remoteTokenAddress);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: remoteChainSelector,
             remotePoolAddresses: remotePoolAddresses,
-            remoteTokenAddresses: abi.encode(remoteTokenAddress),
+            remoteTokenAddresses: remoteTokenAddresses,
             outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
             inboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0})
         });
