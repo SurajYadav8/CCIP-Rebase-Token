@@ -123,12 +123,16 @@ contract CrossChainTest is Test {
         remoteTokenAddresses[0] = abi.encode(remoteTokenAddress);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: remoteChainSelector,
-            allowed: true,
+            allowed: false,
             remotePoolAddresses: remotePoolAddresses,
             remoteTokenAddresses: remoteTokenAddresses,
             outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
             inboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0})
         });
         TokenPool(localPool).applyChainUpdates(new uint64[](0), chainsToAdd);
+    }
+
+    function bridgeTokens(uint256 amountTOBridge, uint256 localFork, uint256 remoteFork, Register.NetworkDetails memory localNetworkDetails, Register.NetworkDetails remoteNetworkDetails, RebaseToken localToken, RebaseToken remoteToken) public {
+
     }
 }
