@@ -135,7 +135,7 @@ contract CrossChainTest is Test {
 
     function bridgeTokens(uint256 amountTOBridge, uint256 localFork, uint256 remoteFork, Register.NetworkDetails memory localNetworkDetails, Register.NetworkDetails remoteNetworkDetails, RebaseToken localToken, RebaseToken remoteToken) public {
         vm.selectFork(localFork);
-        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({})
+        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({});
         vm.startPrank(user);
 
     }
