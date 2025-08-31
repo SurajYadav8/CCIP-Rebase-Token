@@ -21,7 +21,7 @@ contract TokenAndPoolDeployer is Script{
         Register.NetworkDetails memory networkDetails = ccipLocalSimulatorFork.getNetworkDetails(block.chainid);
         vm.startBroadcast();
         token = new RebaseToken();
-        pool = new RebaseTokenPool(IERC20(address(token)), new address[](0), networkDetails.rnmProxyAddress, networkDetails.routerAddress);
+        pool = new RebaseTokenPool(IERC20(address(token)), new address[](0), networkDetails.rmnProxyAddress, networkDetails.routerAddress);
         token.grantMintAndBurnRole(address(pool));
         RegistryModuleOwnerCustom(networkDetails.registryModuleOwnerCustomAddress).registerAdminViaOwner(address(token));
         TokenAdminRegistry(networkDetails.tokenAdminRegistryAddress).acceptAdminRole(address(token));
