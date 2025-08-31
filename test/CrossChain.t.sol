@@ -167,7 +167,7 @@ contract CrossChainTest is Test {
         uint256 remoteBalanceBefore = remoteToken.balanceOf(user);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
         uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
-        assertEq(remoteBalanceAfter, remoteBalanceBefore + amountToBridge);
+        assertEq(remoteBalanceAfter, (remoteBalanceBefore + amountToBridge));
         uint256 remoteUserInterestRate = remoteToken.getUserInterestRate(user);
         assertEq(localUserInterestRate, remoteUserInterestRate);
         
@@ -181,9 +181,9 @@ contract CrossChainTest is Test {
         Vault(payable(address(vault))).deposit{value: SEND_VALUE}();
         assertEq(sepoliaToken.balanceOf(user), SEND_VALUE);
         bridgeTokens(SEND_VALUE, sepoliaFork, arbSepoliaFork, sepoliaNetworkDetails, arbSepoliaNetworkDetails, sepoliaToken, arbSepoliaToken);
-    }
 
-    vm.selectFork(arbSepoliaFork);
-    vm.warp(block.timestamp + 20 minutes);
-    bridgeTokens(arbSepoliaToken.balanceOf(user), arbSepoliaFork, sepoliaFork, arbSepoliaNetworkDetails, sepoliaNetworkDetails, arbSepoliaToken, sepoliaToken);
+        vm.selectFork(arbSepoliaFork);
+        vm.warp(block.timestamp + 20 minutes);
+        bridgeTokens(arbSepoliaToken.balanceOf(user), arbSepoliaFork, sepoliaFork, arbSepoliaNetworkDetails, sepoliaNetworkDetails, arbSepoliaToken, sepoliaToken);
+    }
 }
