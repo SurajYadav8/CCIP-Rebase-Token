@@ -19,6 +19,7 @@ import {IRouterClient} from "../lib/ccip/contracts/src/v0.8/ccip/interfaces/IRou
 contract CrossChainTest is Test {
     address immutable owner = makeAddr("owner");
     address immutable user = makeAddr("user");
+    uint256 SEND_VALUE = 1e5;
 
     uint256 sepoliaFork;
     uint256 arbSepoliaFork;
@@ -172,4 +173,17 @@ contract CrossChainTest is Test {
         
 
     }
+
+    function testBridgeAllTokens() public {
+        vm.selectFork(sepoliaFork);
+        vm.deal(user, SEND_VALUE);
+        vm.prank(user);
+        Vault(payable(address(vault))).deposit{value: SEND_VALUE}();
+        assertEq(sepoliaToken.balanceOf(user), SEND_VALUE);
+        bridgeTokens(SEND_VALUE, sepoliaFork, arbSepoliaFork, sepoliaNetworkDetails, arbSepoliaNetworkDetails, sepoliaToken, arbSepoliaToken);
+    }
+
+    vm.selectFork(arbSepoliaFork);
+    vm.warp(block.timestamp + 20 minutes);
+    bridgeTokens(arbSepoliaToken.balanceOf(user), arbSepoliaFork, sepoliaFork, arbSepoliaNetworkDetails, sepoliaNetworkDetails, arbSepoliaToken, sepoliaToken);
 }
