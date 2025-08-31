@@ -14,6 +14,7 @@ import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdmin
 import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
 import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 import {Client} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/Client.sol";
+import {IRouterClient} from "../lib/ccip/contracts/src/v0.8/ccip/interfaces/IRouterClient.sol";
 
 contract CrossChainTest is Test {
     address immutable owner = makeAddr("owner");
@@ -133,9 +134,22 @@ contract CrossChainTest is Test {
         TokenPool(localPool).applyChainUpdates(new uint64[](0), chainsToAdd);
     }
 
-    function bridgeTokens(uint256 amountTOBridge, uint256 localFork, uint256 remoteFork, Register.NetworkDetails memory localNetworkDetails, Register.NetworkDetails remoteNetworkDetails, RebaseToken localToken, RebaseToken remoteToken) public {
+    function bridgeTokens(uint256 amountToBridge, uint256 localFork, uint256 remoteFork, Register.NetworkDetails memory localNetworkDetails, Register.NetworkDetails remoteNetworkDetails, RebaseToken localToken, RebaseToken remoteToken) public {
         vm.selectFork(localFork);
-        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({});
+
+        Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
+        tokenAmounts[0] = Client.EVMTokenAmount({
+            token: address(localToken),
+            amount: amountToBridge
+        });
+        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+            receiver: abi.encode(user),
+            data: "",
+            tokenAmounts: tokenAmounts,
+            feeToken: localNetworkDetails.linkAddress,
+             extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 0}))
+        });
+        localNetworkDetails.routerAddress
         vm.startPrank(user);
 
     }
