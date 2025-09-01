@@ -44,5 +44,7 @@ contract ConfigurePool is Script {
 
         uint256 token = 0;
         address[] memory recipients = new address[](1);
+
+        
     }
 }
