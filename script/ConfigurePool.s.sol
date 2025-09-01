@@ -39,11 +39,4 @@ contract ConfigurePool is Script {
         vm.stopBroadcast();
     }
 
-    function transfer() public {
-        // Implement transfer logic here
-
-        uint256 token = 0;
-        address[] memory recipients = new address[](1);
-        recipients[0] = address(0);
-    }
 }
