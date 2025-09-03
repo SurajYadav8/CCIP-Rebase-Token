@@ -4,7 +4,9 @@ pragma solidity ^0.8.24;
 import {Script} from "forge-std/Script.sol";
 import {IRouterClient} from "../lib/ccip/contracts/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Client} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/Client.sol";
-import {IERC20} from "../lib/ccip/contracts/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from
+    "../lib/ccip/contracts/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
+
 contract BridgeTokensScript is Script {
     function run(
         address receiverAddress,
