@@ -5,7 +5,6 @@ import {Script} from "forge-std/Script.sol";
 import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
 import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
-// ...existing code...
 contract ConfigurePoolScript is Script {
     function run(
         address localPool,
@@ -43,4 +42,3 @@ contract ConfigurePoolScript is Script {
         vm.stopBroadcast();
     }
 }
-// ...existing code...
