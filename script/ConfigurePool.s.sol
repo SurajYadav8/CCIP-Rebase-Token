@@ -3,39 +3,44 @@ pragma solidity ^0.8.24;
 
 import {Script} from "forge-std/Script.sol";
 import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
+import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
-contract ConfigurePool is Script {
+// ...existing code...
+contract ConfigurePoolScript is Script {
     function run(
         address localPool,
         uint64 remoteChainSelector,
         address remotePool,
         address remoteToken,
+        bool allowed, // <-- Add this parameter
         bool outboundRateLimiterIsEnabled,
         uint128 outboundRateLimiterCapacity,
         uint128 outboundRateLimiterRate,
+        bool inboundRateLimiterIsEnabled,
         uint128 inboundRateLimiterCapacity,
-        uint128 inboundRateLimiterIsEnabled,
         uint128 inboundRateLimiterRate
     ) public {
         vm.startBroadcast();
-        bytes[] memory remotePoolAddresses = new bytes[](1);
-        remotePoolAddresses[0] = abi.encode(remotePool);
+        bytes memory remotePoolAddress = abi.encode(remotePool);
         TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
         chainsToAdd[0] = TokenPool.ChainUpdate({
-            chainSelector: remoteChainSelector,
-            remotePoolAddresses: remotePoolAddresses,
+            remoteChainSelector: remoteChainSelector,
+            allowed: allowed, // <-- Add this field
+            remotePoolAddress: remotePoolAddress,
             remoteTokenAddress: abi.encode(remoteToken),
-            outboundRateLimiter: RateLimiter.Config({
+            outboundRateLimiterConfig: RateLimiter.Config({
                 isEnabled: outboundRateLimiterIsEnabled,
                 capacity: outboundRateLimiterCapacity,
                 rate: outboundRateLimiterRate
             }),
-            inboundRateLimiter: RateLimiter.Config({
+            inboundRateLimiterConfig: RateLimiter.Config({
                 isEnabled: inboundRateLimiterIsEnabled,
                 capacity: inboundRateLimiterCapacity,
                 rate: inboundRateLimiterRate
             })
         });
+        TokenPool(localPool).applyChainUpdates(chainsToAdd);
         vm.stopBroadcast();
     }
 }
+// ...existing code...
