@@ -38,5 +38,4 @@ contract ConfigurePool is Script {
         });
         vm.stopBroadcast();
     }
-
 }
